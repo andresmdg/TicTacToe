@@ -40,6 +40,7 @@ void initGame(void);
 void initBoard(void);
 void updateBoard(void);
 void setToken(char token, int x);
+
   // Validators
 int winner(void);
 int validPos(int x);
@@ -139,12 +140,12 @@ void setToken(char token, int x){
 	} else if (!winner() && token == 'O'){
 		return game();
 	} else if (token == 'X'){
-		system("cls");
-		printf("\n\nHAS GANADO EL JUEGO!!!\n\n");
+		updateBoard();
+		printf("\nHAS GANADO EL JUEGO!!!\n\n");
 		return;
 	} else if (token == 'O'){
-		system("cls");
-		printf("\n\nHAS PERDIDO EL JUEGO!!!\n\n");
+		updateBoard();
+		printf("\nHAS PERDIDO EL JUEGO!!!\n\n");
 		return;
 	};
 	
