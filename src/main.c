@@ -1,107 +1,173 @@
+/*
+
+	Print Template
+
+		 1 | 2 | 3 
+		---+---+---
+		 4 | 5 | 6 
+		---+---+---
+		 7 | 8 | 9 
+	 
+	Indique en que casilla desea poner su ficha: 2
+	
+	
+		 1 | X | 3 
+		---+---+---
+		 O | 5 | 6 
+		---+---+---
+		 7 | 8 | 9 
+	
+	Indique en que casilla desea poner su ficha: 
+*/
+
 // Standard libraries
 #include <stdio.h>
 #include <stdlib.h>
 
-void loop(char c[3][3]);
-void tablero(char c[3][3]);
-void Intro_Yo(char c[3][3]);
-void Intro_Primera(char c[3][3]);
-void colocar(char c[3][3], char aux);
+// Define TRUE FALSE
+#define true 1
+#define false 0
+
+// Variables
+static char board[9] = { "0" };
+
+// Function declaration
+  // Game Functions
+void game(void);
+void initGame(void);
+void initBoard(void);
+void updateBoard(void);
+void setToken(char token, int x);
+  // Validators
+int winner(void);
+int validPos(int x);
+
+// Main Function
 
 int main(void) {
 	
-	char c[3][3];
+	initBoard();
+	game();
 	
-	loop(c);
+	system("pause");
 	
 	return 0;
 };
 
-void loop(char c[3][3]) {
+// InitBoard Function
+void initBoard(void){
 	
-	Intro_Primera(c); // Crea el tablero
-	Intro_Yo(c); // Pide al usuario que ingrese su marca
+	int fila;
+	char iterator = '1';
+	
+	for (fila = 0; fila < 9; fila++){
+			board[fila]= iterator++;
+	};
 	
 };
 
-void Intro_Yo(char c[3][3]){
+// UpdateBoard Function
+void updateBoard(void){
 	
 	system("cls");
-	tablero(c);	
 	
-	char aux;
+	int columna, fila;
 	
-	printf("\n\nElige la casilla donde colocar tu marca: ");
-	scanf(" %c", aux);
+	for (fila = 0; fila < 9; fila++){
+		
+		if (fila == 0) {
+			printf("\n %c |", board[fila]);
+		} else if (fila < 2 || fila > 2 && fila < 5 || fila > 5 && fila < 8){
+			printf(" %c |", board[fila]);
+		} else if (fila == 2 || fila == 5){
+			printf(" %c ", board[fila]);
+			printf("\n---+---+---\n");
+		} else {
+			printf(" %c \n", board[fila]);
+		};
+	};
 	
-	if (aux < '1') {
-		printf("\n Has ingresado una casilla invalida!\nPor favor ingresa una casilla valida.");
+};
+
+// Game Function
+void game(void){
+	
+	updateBoard();
+	
+	int x;
+	
+	printf("\nIndica la casilla para colocar tu ficha: ");
+	scanf("%d", &x);
+	
+	if (x < 1 || x >= 10){
+		system("cls");
+		printf("\n\n[DATO] Error: Dato invalido, Por favor indique un valor del 1 al 9.\n\n");
 		system("pause");
-		Intro_Yo(c);
+		return game();
+	}else if(!validPos(x)) {
+		system("cls");
+		printf("\n\n[DATO] Error: Casilla ocupada! Por favor indique una casilla libre.\n\n");
+		system("pause");
+		return game();
+	};
+
+	setToken('X', x);
+
+};
+
+// Valid Position function
+int validPos(int x){
+	
+	if (board[x - 1] == 'X' || board[x - 1] == 'O') {
+		return false;
+	};
+	
+	return true;
+	
+};
+
+// Set Token into the board function
+
+void setToken(char token, int x){
+	
+	board[x - 1] == token;
+	
+	if (!winner()){
+		return game();
+	} else if (token == 'X'){
+		system("cls");
+		printf("\n\nHAS GANADO EL JUEGO!!!\n\n");
+		return;
+	} else if (token == 'O'){
+		system("cls");
+		printf("\n\nHAS PERDIDO EL JUEGO, Suerte para la proxima!!!\n\n");
 		return;
 	};
 	
-	colocar(c, aux);
+	updateBoard();
 	
 };
 
-void Intro_Primera(char c[3][3]) {
+int winner(void){
 	
-	int j, k;
-	char aux;
-	aux = '1';
-	
-	for (j = 0; j < 3; j++){
-		for (k = 0; k < 3; k++){
-			c[j][k] = aux++;
-		};
-	};
-};
-
-void tablero(char c[3][3]) {
-	int j, k;
-	
-	for (j = 0; j < 3; j++){
-		for (k = 0; k < 3; k++){
-			if (k < 2){
-				printf(" %c |", c[j][k]);
-			} else {
-				printf(" %c ", c[j][k]);
-			};
-		};
-		
-		if (j < 2){
-			printf("\n-----------\n");
-		};
-	};
-};
-
-void colocar(char c[3][3], char aux, char token, char user) {
-	
-	int x = atoi(aux);
-	
-	if (aux >= '1' && aux <= '3') {
-		
-		c[0][x - 1] == token;
-	
-	} else if (aux >= '4' && aux <= '6'){
-		
-		c[1][x - 1] == token;
-	
-	} else if (x >= '7' && aux <= '9'){
-		
-		c[2][aux - 1] == token;
-	
+	if (board[0] == 'X' && board[1] == 'X' && board[2] == 'X'|| board[0] == 'O' && board[1] == 'O' && board[2] == 'O'){
+		return true;
+	}else if(board[3] == 'X' && board[4] == 'X' && board[5] == 'X'|| board[3] == 'O' && board[4] == 'O' && board[5] == 'O'){
+		return true;
+	}else if(board[6] == 'X' && board[7] == 'X' && board[8] == 'X'|| board[6] == 'O' && board[7] == 'O' && board[8] == 'O'){
+		return true;
+	}else if(board[0] == 'X' && board[3] == 'X' && board[6] == 'X'|| board[0] == 'O' && board[3] == 'O' && board[6] == 'O'){
+		return true;
+	}else if(board[1] == 'X' && board[4] == 'X' && board[7] == 'X'|| board[1] == 'O' && board[4] == 'O' && board[7] == 'O'){
+		return true;
+	}else if(board[2] == 'X' && board[5] == 'X' && board[8] == 'X'|| board[2] == 'O' && board[5] == 'O' && board[8] == 'O'){
+		return true;
+	}else if(board[2] == 'X' && board[4] == 'X' && board[6] == 'X'|| board[2] == 'O' && board[4] == 'O' && board[6] == 'O'){
+		return true;
+	}else if(board[0] == 'X' && board[4] == 'X' && board[8] == 'X'|| board[0] == 'O' && board[4] == 'O' && board[8] == 'O'){
+		return true;
 	};
 	
+	return false;
+	
 };
-
-/*
-
-	 1 | 2 | 3 
-	-----------
-	 4 | 5 | 6 
-	-----------
-	 7 | 8 | 9 
-
-*/
