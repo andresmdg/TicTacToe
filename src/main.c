@@ -21,6 +21,7 @@
 */
 
 // Standard libraries
+#include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -33,6 +34,7 @@ static char board[9] = { "0" };
 
 // Function declaration
   // Game Functions
+void cpu(void);
 void game(void);
 void initGame(void);
 void initBoard(void);
@@ -104,7 +106,7 @@ void game(void){
 		printf("\n\n[DATO] Error: Dato invalido, Por favor indique un valor del 1 al 9.\n\n");
 		system("pause");
 		return game();
-	}else if(!validPos(x)) {
+	}else if(!validPos(x - 1)) {
 		system("cls");
 		printf("\n\n[DATO] Error: Casilla ocupada! Por favor indique una casilla libre.\n\n");
 		system("pause");
@@ -112,13 +114,13 @@ void game(void){
 	};
 
 	setToken('X', x);
-
+	
 };
 
 // Valid Position function
 int validPos(int x){
 	
-	if (board[x - 1] == 'X' || board[x - 1] == 'O') {
+	if (board[x] == 'X' || board[x] == 'O') {
 		return false;
 	};
 	
@@ -130,9 +132,11 @@ int validPos(int x){
 
 void setToken(char token, int x){
 	
-	board[x - 1] == token;
+	board[x - 1] = token;
 	
-	if (!winner()){
+	if (!winner() && token == 'X'){
+		return cpu();
+	} else if (!winner() && token == 'O'){
 		return game();
 	} else if (token == 'X'){
 		system("cls");
@@ -140,7 +144,7 @@ void setToken(char token, int x){
 		return;
 	} else if (token == 'O'){
 		system("cls");
-		printf("\n\nHAS PERDIDO EL JUEGO, Suerte para la proxima!!!\n\n");
+		printf("\n\nHAS PERDIDO EL JUEGO!!!\n\n");
 		return;
 	};
 	
@@ -170,4 +174,17 @@ int winner(void){
 	
 	return false;
 	
+};
+
+void cpu(void){
+	
+	int x, min = 1, max = 9;
+	
+	x = (rand() % (max - min + 1)) + min;
+
+	if (!validPos(x - 1)){
+		return cpu();
+	};
+	
+	setToken('O', x);
 };
